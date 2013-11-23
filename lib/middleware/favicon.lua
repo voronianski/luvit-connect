@@ -1,19 +1,23 @@
 local fs = require('fs')
+local tp = require('../helpers').tprint
 
 function favicon (path, options)
 	local icon -- caching the icon
 
+	if not options then options = {} end
+
 	path = path or __dirname .. '/../public/favicon.ico'
 	maxAge = options.maxAge or 86400000
 
-	return function (req, res, next)
+	return function (s, req, res, fol)
 		if ('/favicon.ico' == req.url) then
 			if (icon) then
+				print(req.url)
 				res:writeHead(200, icon.headers)
 				res:finish(icon.body)
 			else
 				fs.readFile(path, function (err, buf)
-					if (err) then next(err) end
+					if (err) then fol(err) end
 
 					icon = {
 						body = buf,
@@ -29,7 +33,9 @@ function favicon (path, options)
 				end)
 			end
 		else
-			next()
+			--print('gogo')
+			--tp(fol)
+			fol()
 		end
 	end
 end

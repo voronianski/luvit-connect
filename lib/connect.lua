@@ -1,7 +1,11 @@
-local helpers = require('./helpers')
+local fs = require('fs')
+local path = require('path')
 local proto = require('./proto')
+local helpers = require('./helpers')
 
-function createServer (...)
+local connect = {}
+
+function connect:createServer (...)
 	local app = {}
 
 	app.route = '/'
@@ -13,9 +17,18 @@ function createServer (...)
 	--	app.use(select(key, ...))
 	--end
 
-	return function (req, res, next)
-		app.handle(req, res, next)
+	app.handler = function (req, res, fol)
+		return app:handle(req, res, fol)
 	end
+
+	return app
 end
 
-return createServer
+-- load all bundled middlewares
+local filesCache = fs.readdirSync(__dirname .. '/middleware')
+for key, file in pairs(filesCache) do
+	local name = path.basename(file, '.lua')
+	connect[name] = require('./middleware/' .. name)
+end
+
+return connect
