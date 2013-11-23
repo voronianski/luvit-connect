@@ -1,12 +1,10 @@
 local http = require('http')
 local connect = require('../lib/connect')
-local h = require('../lib/helpers')
 
 local app = connect.createServer()
 
 app:use(connect.favicon())
-app:use(function (s, req, res)
-	h.tprint(res)
+app:use(function (req, res)
 	res:finish('hello!')
 end)
 

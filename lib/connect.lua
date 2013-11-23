@@ -17,8 +17,8 @@ function connect:createServer (...)
 	--	app.use(select(key, ...))
 	--end
 
-	app.handler = function (req, res, fol)
-		return app:handle(req, res, fol)
+	app.handler = function (req, res, follow)
+		return app:handle(req, res, follow)
 	end
 
 	return app

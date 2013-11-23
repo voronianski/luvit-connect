@@ -1,6 +1,5 @@
 local http = require('http')
 local table = require('table')
-local helpers = require('./helpers')
 
 local app = {}
 local stack = {}
@@ -11,8 +10,12 @@ function app:use (route, fn)
 		route = '/'
 	end
 
-	print('use')
-	table.insert(stack, { route = route, handle = fn })
+	-- define next stack
+	local go = {}
+	go.route = route
+	function go:handle () return fn end
+
+	table.insert(stack, go)
 
 	return self
 end
@@ -20,15 +23,11 @@ end
 function app:handle (req, res, out)
 	local index = 0
 
-	print('handle')
+	function follow (err)
+		local layer
 
-	function fol (err)
-		print('fol')
 		index = index + 1
-		local layer = stack[index]
-
-		helpers.tprint(stack)
-		--print(stack)
+		layer = stack[index]
 
 		-- all done
 		if not layer then
@@ -36,18 +35,13 @@ function app:handle (req, res, out)
 		end
 
 		if err then
-			fol(err)
+			follow(err)
 		else
-			print('stack')
-			layer:handle(req, res, fol)
+			layer:handle()(req, res, follow)
 		end
-
 	end
-	fol()
-end
 
-function app:listen ( ... )
-	-- body
+	follow()
 end
 
 return app
