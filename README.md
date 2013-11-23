@@ -1,5 +1,7 @@
 # luvit-connect
 
+##### status: in progress
+
 Luvit-connect is a port of [node.js](http://nodejs.org/)'s [connect](https://github.com/senchalabs/connect) middleware HTTP server framework for [luvit.io](http://luvit.io/).
 
 ### Usage
