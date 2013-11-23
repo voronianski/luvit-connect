@@ -1,6 +1,6 @@
 local fs = require('fs')
 
-local function favicon (path, options)
+function favicon (path, options)
 	local icon -- caching the icon
 
 	path = path or __dirname .. '/../public/favicon.ico'
@@ -10,7 +10,7 @@ local function favicon (path, options)
 		if ('/favicon.ico' == req.url) then
 			if (icon) then
 				res:writeHead(200, icon.headers)
-				res:send(icon.body)
+				res:finish(icon.body)
 			else
 				fs.readFile(path, function (err, buf)
 					if (err) then next(err) end
@@ -25,7 +25,7 @@ local function favicon (path, options)
 					}
 
 					res:writeHead(200, icon.headers)
-					res:send(icon.body)
+					res:finish(icon.body)
 				end)
 			end
 		else
