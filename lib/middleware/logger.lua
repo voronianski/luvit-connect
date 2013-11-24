@@ -22,14 +22,16 @@ function logger (options)
 		local startTime = os.clock()
 		local dateTime = os.date()
 		local httpVersion = req.version_major .. '.' .. req.version_minor
-		local duration = helpers.roundToDecimals((os.clock() - startTime) * 1000, 2)
+		local function duration (seconds)
+			return helpers.roundToDecimals(seconds * 1000, 2)
+		end
 
 		if format == 'dev' then
-			output = req.method .. ' ' .. req.url .. ' ' .. duration .. 'ms'
+			output = req.method .. ' ' .. req.url .. ' ' .. duration(os.clock() - startTime) .. 'ms'
 		elseif format == 'short' then
-			output = dateTime .. ' ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration .. 'ms'
+			output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms'
 		else
-			output = dateTime .. ' ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration .. 'ms ' .. req.headers['user-agent']
+			output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms ' .. req.headers['user-agent']
 		end
 
 		stream:write(output .. '\n')
