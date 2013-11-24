@@ -1,6 +1,7 @@
 local http = require('http')
 local table = require('table')
 local helpers = require('./helpers')
+local debug = require('debug')
 
 local app = {}
 local stack = {}
@@ -25,7 +26,7 @@ function app:handle (req, res, out)
 	local index = 0
 
 	function follow (err)
-		local layer
+		local layer, handle
 
 		index = index + 1
 		layer = stack[index]
@@ -67,10 +68,17 @@ function app:handle (req, res, out)
 			return
 		end
 
+		handle = layer:handle()
+
 		if err then
-			follow(err)
+			local arity = debug.getinfo(handle, 'u').nparams
+			if arity == 4 then
+				handle(err, req, res, follow)
+			else
+				follow(err)
+			end
 		else
-			layer:handle()(req, res, follow)
+			handle(req, res, follow)
 		end
 	end
 

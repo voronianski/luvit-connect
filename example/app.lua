@@ -5,8 +5,7 @@ local app = connect.createServer()
 
 app:use(connect.favicon())
 app:use(function (req, res, fol)
-	fol({ error = true , new = {} })
-	--res:finish('hello!')
+	res:finish('hello!')
 end)
 
 http.createServer(app.handler):listen(8080)
