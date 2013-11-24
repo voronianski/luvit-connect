@@ -6,19 +6,19 @@ Luvit-connect is a port of [node.js](http://nodejs.org/)'s [connect](https://git
 
 ### Usage
 
-Luvit-connect contains nearly all middlewares that originally exist in node's version. Simple usage example can be sa follows:
+Luvit-connect contains nearly all middlewares that originally exist in node's version. Simple usage example can be as follows:
 
 ```lua
 local connect = require('connect')
 local http = require('http')
 
-local app = connect()
+local app = connect.createServer()
 
 app:use(connect.favicon())
 app:use(connect.logger('dev'))
 app:use(connect.static('public'))
 
-http.createServer(app).listen(8080)
+http.createServer(app.handler).listen(8080)
 ```
 
 ### Middleware

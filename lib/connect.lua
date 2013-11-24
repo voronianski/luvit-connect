@@ -12,11 +12,6 @@ function connect:createServer (...)
 	app.stack = {}
 	helpers.merge(app, proto)
 
-	--print(...)
-	--for key, value in pairs(...) do
-	--	app.use(select(key, ...))
-	--end
-
 	app.handler = function (req, res, follow)
 		return app:handle(req, res, follow)
 	end

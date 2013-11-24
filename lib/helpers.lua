@@ -16,6 +16,14 @@ function tprint (tbl, indent)
 	end
 end
 
+function stringify (tbl, indent)
+	indent = indent or 0
+
+	for key, value in pairs(tbl) do
+		formatting = string.rep('  ', indent) .. key .. ': '
+		 return formatting .. tostring(value)
+	end
+end
 
 -- merge table2 into table1
 function merge (table1, table2)
@@ -28,5 +36,6 @@ end
 
 return {
 	merge = merge,
-	tprint = tprint
+	tprint = tprint,
+	stringify = stringify
 }
