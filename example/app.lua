@@ -4,6 +4,7 @@ local connect = require('../lib/connect')
 local app = connect.createServer()
 
 app:use(connect.favicon())
+app:use(connect.logger('dev'))
 app:use(function (req, res, fol)
 	res:finish('hello!')
 end)

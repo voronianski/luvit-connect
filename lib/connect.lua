@@ -5,7 +5,7 @@ local helpers = require('./helpers')
 
 local connect = {}
 
-function connect:createServer (...)
+function connect:createServer ()
 	local app = {}
 
 	app.route = '/'

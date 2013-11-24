@@ -1,7 +1,39 @@
+local os = require('os')
+local helpers = require('../helpers')
 
-function logger ()
-	return function (req, res)
-		-- body
+-- available options:
+-- `format` - format of a string (default, short, dev)
+-- `stream` - output stream, defaults to stdout
+
+function logger (options)
+	options = options or {}
+
+	local format, stream
+	if type(options) == 'string' then
+		format = options
+		stream = process.stdout
+	else
+		format = options.format or 'default'
+		stream = options.stream or process.stdout
+	end
+
+	return function (req, res, follow)
+		local output
+		local startTime = os.clock()
+		local dateTime = os.date()
+		local httpVersion = req.version_major .. '.' .. req.version_minor
+		local duration = helpers.roundToDecimals((os.clock() - startTime) * 1000, 2)
+
+		if format == 'dev' then
+			output = req.method .. ' ' .. req.url .. ' ' .. duration .. 'ms'
+		elseif format == 'short' then
+			output = dateTime .. ' ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration .. 'ms'
+		else
+			output = dateTime .. ' ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration .. 'ms ' .. req.headers['user-agent']
+		end
+
+		stream:write(output .. '\n')
+		follow()
 	end
 end
 

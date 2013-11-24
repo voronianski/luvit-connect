@@ -1,4 +1,5 @@
 local string = require('string')
+local math = require('math')
 
 -- pretty print of tables to console
 function tprint (tbl, indent)
@@ -16,13 +17,10 @@ function tprint (tbl, indent)
 	end
 end
 
-function stringify (tbl, indent)
-	indent = indent or 0
-
-	for key, value in pairs(tbl) do
-		formatting = string.rep('  ', indent) .. key .. ': '
-		 return formatting .. tostring(value)
-	end
+function roundToDecimals (num, digits)
+	local shift = 10 ^ digits
+	local result = math.floor(num * shift + 0.5) / shift
+	return result
 end
 
 -- merge table2 into table1
@@ -37,5 +35,5 @@ end
 return {
 	merge = merge,
 	tprint = tprint,
-	stringify = stringify
+	roundToDecimals = roundToDecimals
 }
