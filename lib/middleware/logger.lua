@@ -27,7 +27,7 @@ function logger (options)
 		end
 
 		if format == 'dev' then
-			output = req.method .. ' ' .. req.url .. ' ' .. duration(os.clock() - startTime) .. 'ms'
+			output = req.method .. ' ' .. res.code .. ' ' .. req.url .. ' ' .. duration(os.clock() - startTime) .. 'ms'
 		elseif format == 'short' then
 			output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms'
 		else

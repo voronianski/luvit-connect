@@ -19,7 +19,7 @@ function app:use (route, fn)
 
 	table.insert(stack, go)
 
-	return self
+	return app
 end
 
 function app:handle (req, res, out)
