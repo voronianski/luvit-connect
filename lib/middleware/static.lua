@@ -4,6 +4,7 @@ local utils = require('utils')
 local url = require('url')
 local mime = require('mime')
 local os = require('os')
+local string = require('string')
 
 -- static files middleware
 -- root - directory path
@@ -25,6 +26,35 @@ function static (root, options)
 
 	return function (req, res, follow)
 		if req.method ~= 'GET' and req.method ~= 'HEAD' then return follow() end
+
+		-- check freshness of `req` and `res` headers
+		-- returns boolean, false indicate that the cache is now stale
+		local function isFresh ()
+			-- defaults
+			local etagMatches = true
+			local notModified = true
+
+			local modifiedSince = req['if-modified-since']
+			local noneMatch = req['if-none-match']
+			local lastModified = res['last-modified']
+			local etag = res['etag']
+			local cc = req['cache-control']
+
+			-- unconditional request
+			if not modifiedSince and not noneMatch then return false end
+
+			-- check for no-cache
+			if cc and string.find(cc, 'no%-cache') then return false end
+
+			if modifiedSince then
+				modifiedSince = os.date(modifiedSince)
+				lastModified = os.date(lastModified)
+				notModified = lastModified <= modifiedSince
+			end
+
+			return etagMatches and notModified
+		end
+
 
 		local function serveFiles (route, fallback)
 			fs.open(route, 'r', function (err, fd)
@@ -57,8 +87,7 @@ function static (root, options)
 
 							fs.close(fd)
 							res:writeHead(302, { ['Location'] = req.url .. '/' })
-							res:finish()
-							return
+							return res:finish()
 						end
 
 
