@@ -3,7 +3,7 @@ local path = require('path')
 local table = require('table')
 local parseUrl = require('url').parse
 local decodeURI = require('querystring').urldecode
-local filter = require('../helpers').filter
+local helpers = require('../helpers')
 
 -- serve directory listings with the given `root` path
 -- options:
@@ -41,13 +41,13 @@ function directory (root, options)
 					if err then return follow(err) end
 
 					if not options.hidden then
-						files = filter(files, function (row, i)
+						files = helpers.filter(files, function (row, i)
 							return '.' ~= row:sub(1, 1)
 						end)
 					end
 
 					if options.filter then
-						files = filter(options.filter)
+						files = helpers.filter(options.filter)
 					end
 
 					table.sort(files)
@@ -92,6 +92,11 @@ function directory (root, options)
 		local url = parseUrl(req.url)
 		local file = decodeURI(url.pathname)
 		local filePath = path.normalize(path.join(root, file))
+
+		-- forbidden malicious path
+		if filePath:sub(1, #root) ~= root then
+			return follow(helpers.throwError(403))
+		end
 
 		createDirStream(filePath)
 	end

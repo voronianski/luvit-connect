@@ -26,6 +26,7 @@ http.createServer(app.handler).listen(8080)
 - favicon
 - logger
 - static
+- directory
 
 ### Tests
 

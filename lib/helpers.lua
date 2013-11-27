@@ -1,3 +1,4 @@
+local http = require('http')
 local table = require('table')
 local string = require('string')
 local math = require('math')
@@ -48,9 +49,18 @@ function merge (table1, table2)
 	return table1
 end
 
+function throwError (code, msg)
+	local err = {
+		status = code,
+		msg = msg or http.STATUS_CODES[code]
+	}
+	return err
+end
+
 return {
 	merge = merge,
 	tprint = tprint,
 	filter = filter,
+	throwError = throwError,
 	roundToDecimals = roundToDecimals
 }
