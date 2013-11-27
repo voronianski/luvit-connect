@@ -19,15 +19,18 @@ function logger (options)
 	end
 
 	return function (req, res, follow)
-		local output
 		local startTime = os.clock()
 		local dateTime = os.date()
-		local httpVersion = req.version_major .. '.' .. req.version_minor
-		local function duration (seconds)
-			return helpers.roundToDecimals(seconds * 1000, 2)
-		end
 
 		local function logRequest ()
+			local output
+			local httpVersion = req.version_major .. '.' .. req.version_minor
+			local function duration (seconds)
+				return helpers.roundToDecimals(seconds * 1000, 2)
+			end
+
+			res:removeListener('end', logRequest)
+
 			if format == 'dev' then
 				output = req.method .. ' ' .. res.code .. ' ' .. req.url .. ' ' .. duration(os.clock() - startTime) .. 'ms'
 			elseif format == 'short' then
