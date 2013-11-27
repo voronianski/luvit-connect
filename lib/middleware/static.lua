@@ -1,10 +1,7 @@
 local path = require('path')
 local fs = require('fs')
-local utils = require('utils')
-local url = require('url')
 local mime = require('mime')
 local os = require('os')
-local string = require('string')
 local debug = require('debug')
 
 -- static files middleware
