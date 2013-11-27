@@ -1,3 +1,4 @@
+local table = require('table')
 local string = require('string')
 local math = require('math')
 
@@ -17,8 +18,23 @@ function tprint (tbl, indent)
 	end
 end
 
-function roundToDecimals (num, digits)
-	local shift = 10 ^ digits
+-- filter values from table
+function filter (tbl, fn)
+	local result = {}
+
+	if not tbl or type(tbl) ~= 'table' then return result end
+
+	for key, value in pairs(tbl) do
+		if fn(value, key, tbl) then
+			table.insert(result, value)
+		end
+	end
+
+	return result
+end
+
+function roundToDecimals (num, decimals)
+	local shift = 10 ^ decimals
 	local result = math.floor(num * shift + 0.5) / shift
 	return result
 end
@@ -35,5 +51,6 @@ end
 return {
 	merge = merge,
 	tprint = tprint,
+	filter = filter,
 	roundToDecimals = roundToDecimals
 }

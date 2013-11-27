@@ -3,6 +3,8 @@ local fs = require('fs')
 local mime = require('mime')
 local os = require('os')
 local debug = require('debug')
+local parseUrl = require('url').parse
+local decodeURI = require('querystring').urldecode
 
 -- static files middleware
 -- root - directory path required
@@ -30,8 +32,7 @@ function static (root, options)
 				fs.fstat(fd, function (err, stat)
 					if err then
 						fs.close(fd)
-						res:writeHead(500, {})
-						return res:finish(tostring(err) .. '\n' .. debug.traceback() .. '\n')
+						return follow(err)
 					end
 
 					local headers
@@ -48,14 +49,20 @@ function static (root, options)
 						['Cache-Control'] = 'public, max-age=' .. (options.maxAge / 1000)
 					}
 
-					-- skip directories and hidden files if no option specified
-					if stat.is_directory or not options.hidden and '.' == path.basename(route):sub(1, 1) then
+					-- skip directories
+					if stat.is_directory then
+						fs.close(fd)
+						res:writeHead(302, { ['Location'] = req.url .. '/' })
+						return res:finish()
+					end
+
+					-- skip hidden files if no option specified
+					if not options.hidden and '.' == path.basename(route):sub(1, 1) then
 						fs.close(fd)
 						return follow()
 					end
 
 					res:writeHead(code, headers)
-
 					if req.method == "HEAD" or code == 304 then
 						fs.close(fd)
 						req.setCode = code
@@ -67,12 +74,14 @@ function static (root, options)
 			end)
 		end
 
-		local urlPath = path.join(root, req.url)
+		local url = parseUrl(req.url)
+		local file = decodeURI(url.pathname)
+		local filePath = path.normalize(path.join(root, file))
 
-		if options.index and urlPath:sub(#urlPath) == '/' then
-			serveFiles(path.join(urlPath, options.index))
+		if options.index and filePath:sub(#filePath) == '/' then
+			serveFiles(path.join(filePath, options.index))
 		else
-			serveFiles(urlPath)
+			serveFiles(filePath)
 		end
 	end
 end
