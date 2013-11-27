@@ -21,7 +21,11 @@ app:use(connect.static('public'))
 http.createServer(app.handler).listen(8080)
 ```
 
-### Middleware
+### Middlewares
+
+- favicon
+- logger
+- static
 
 ### Tests
 

@@ -17,6 +17,7 @@ function logger (options)
 		stream = options.stream or process.stdout
 	end
 
+	-- TO DO: investigate proper res codes
 	return function (req, res, follow)
 		local output
 		local startTime = os.clock()
