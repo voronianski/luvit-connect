@@ -2,8 +2,9 @@ local os = require('os')
 local helpers = require('../helpers')
 
 -- available options:
--- `format` - format of a string (default, short, dev)
--- `stream` - output stream, defaults to stdout
+--  `format` - format of a string (default, short, dev)
+--  `stream` - output stream, defaults to stdout
+--  `immediate` - write log line on request instead of response, defaults to false
 
 function logger (options)
 	options = options or {}
@@ -17,7 +18,6 @@ function logger (options)
 		stream = options.stream or process.stdout
 	end
 
-	-- TO DO: investigate proper res codes
 	return function (req, res, follow)
 		local output
 		local startTime = os.clock()
@@ -27,15 +27,23 @@ function logger (options)
 			return helpers.roundToDecimals(seconds * 1000, 2)
 		end
 
-		if format == 'dev' then
-			output = req.method .. ' ' .. res.code .. ' ' .. req.url .. ' ' .. duration(os.clock() - startTime) .. 'ms'
-		elseif format == 'short' then
-			output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms'
-		else
-			output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms ' .. req.headers['user-agent']
+		local function logRequest ()
+			if format == 'dev' then
+				output = req.method .. ' ' .. res.code .. ' ' .. req.url .. ' ' .. duration(os.clock() - startTime) .. 'ms'
+			elseif format == 'short' then
+				output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms'
+			else
+				output = dateTime .. ' - ' .. req.method .. ' ' .. req.url .. ' HTTP/' .. httpVersion .. ' ' .. res.code .. ' ' .. duration(os.clock() - startTime) .. 'ms ' .. req.headers['user-agent']
+			end
+			stream:write(output .. '\n')
 		end
 
-		stream:write(output .. '\n')
+		if immediate then
+			logRequest()
+		else
+			res:on('end', logRequest)
+		end
+
 		follow()
 	end
 end
