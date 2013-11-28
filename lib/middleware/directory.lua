@@ -47,7 +47,7 @@ function directory (root, options)
 					end
 
 					if options.filter then
-						files = helpers.filter(options.filter)
+						files = helpers.filter(files, options.filter)
 					end
 
 					table.sort(files)
