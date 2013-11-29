@@ -11,6 +11,7 @@ function query ()
 
 				if not urlParsed or urlParsed.href ~= req.url then
 					urlParsed = url.parse(req.url)
+					req._parsedUrl = urlParsed
 				end
 
 				req.query = qs.parse(urlParsed.query)
