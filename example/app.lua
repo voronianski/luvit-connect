@@ -7,6 +7,7 @@ local public = path.join(__dirname, 'public')
 
 app:use(connect.favicon())
 app:use(connect.logger('dev'))
+app:use(connect.methodOverride())
 app:use(connect.static(public))
 app:use(connect.directory(public))
 app:use(function (req, res, fol)

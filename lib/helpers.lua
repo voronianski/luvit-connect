@@ -34,7 +34,9 @@ function filter (tbl, fn)
 	return result
 end
 
+-- round number to decimals, defaults to 2 decimals
 function roundToDecimals (num, decimals)
+	decimals = decimals or 2
 	local shift = 10 ^ decimals
 	local result = math.floor(num * shift + 0.5) / shift
 	return result
@@ -49,12 +51,57 @@ function merge (table1, table2)
 	return table1
 end
 
+-- get index of field in table
+function indexOf (tbl, field)
+	local result
+
+	for i = 1, #tbl do
+		if field == tbl[i] then
+			result = i
+			break
+		end
+	end
+
+	return result
+end
+
+-- create an error table to throw
 function throwError (code, msg)
-	local err = {
+	return {
 		status = code,
 		msg = msg or http.STATUS_CODES[code]
 	}
-	return err
+end
+
+-- check if http method is supported by luvit
+function supportMethod (method)
+	local methods = {
+		'get',
+		'post',
+		'put',
+		'head',
+		'delete',
+		'options',
+		'trace',
+		'copy',
+		'lock',
+		'mkcol',
+		'move',
+		'propfind',
+		'proppatch',
+		'unlock',
+		'report',
+		'mkactivity',
+		'checkout',
+		'merge',
+		'm-search',
+		'notify',
+		'subscribe',
+		'unsubscribe',
+		'patch'
+	}
+
+	return indexOf(methods, method) ~= nil
 end
 
 return {
@@ -62,5 +109,6 @@ return {
 	tprint = tprint,
 	filter = filter,
 	throwError = throwError,
-	roundToDecimals = roundToDecimals
+	roundToDecimals = roundToDecimals,
+	supportMethod = supportMethod
 }

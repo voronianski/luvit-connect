@@ -6,19 +6,21 @@ local helpers = require('../helpers')
 function methodOverride (key)
 	key = key or '_method'
 
-	req.originalMethod = req.originalMethod or req.method
+	return function (req, res, follow)
+		req.originalMethod = req.originalMethod or req.method
 
-	return function (req, res, next)
 		local method
 
 		if req.body and type(req.body) == 'table' and req.body[key] ~= nil then
+			method = req.body[key]:lower()
+			req.body[key] = nil
 		end
 
 		if req.headers['x-http-method-override'] then
 			method = req.headers['x-http-method-override']:lower()
 		end
 
-		if helpers.supports(method) then
+		if helpers.supportMethod(method) then
 			req.method = method:upper()
 		end
 
