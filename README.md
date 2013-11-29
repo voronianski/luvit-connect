@@ -23,12 +23,14 @@ http.createServer(app.handler).listen(8080)
 
 ### Middlewares
 
+- directory
 - favicon
 - logger
+- methodOverride
+- query
 - static
-- directory
 
 ### Tests
 
 ---
-*MIT Licensed*
+(c) 2013 **MIT Licensed**
