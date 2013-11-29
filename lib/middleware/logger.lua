@@ -26,7 +26,7 @@ function logger (options)
 			local output
 			local httpVersion = req.version_major .. '.' .. req.version_minor
 			local function duration (seconds)
-				return helpers.roundToDecimals(seconds * 1000, 2)
+				return helpers.roundToDecimals(seconds * 1000)
 			end
 
 			res:removeListener('end', logRequest)

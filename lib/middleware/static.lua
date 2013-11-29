@@ -41,18 +41,17 @@ function static (root, options)
 
 					if etag == req.headers['if-none-match'] then code = 304 end
 
-					headers = {
-						['Content-Type'] = mime.getType(route),
-						['Content-Length'] = stat.size,
-						['Last-Modified'] = os.date("!%a, %d %b %Y %H:%M:%S GMT", stat.mtime),
-						['Etag'] = etag,
-						['Cache-Control'] = 'public, max-age=' .. (options.maxAge / 1000)
-					}
+					res:setHeader('Content-Type', mime.getType(route))
+					res:setHeader('Content-Length', stat.size)
+					res:setHeader('Last-Modified', os.date("!%a, %d %b %Y %H:%M:%S GMT", stat.mtime))
+					res:setHeader('Etag', etag)
+					res:setHeader('Cache-Control', 'public, max-age=' .. (options.maxAge / 1000))
 
 					-- skip directories
 					if stat.is_directory then
 						fs.close(fd)
-						res:writeHead(302, { ['Location'] = req.url .. '/' })
+						res:setCode(302)
+						res:setHeader('Location', req.url .. '/')
 						return res:finish()
 					end
 
@@ -62,10 +61,10 @@ function static (root, options)
 						return follow()
 					end
 
-					res:writeHead(code, headers)
+					res:setCode(code)
+
 					if req.method == "HEAD" or code == 304 then
 						fs.close(fd)
-						req.setCode = code
 						return res:finish()
 					end
 

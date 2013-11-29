@@ -3,6 +3,8 @@ local path = require('path')
 local proto = require('./proto')
 local helpers = require('./helpers')
 
+--require('./patch')
+
 local connect = {}
 
 function connect:createServer ()
