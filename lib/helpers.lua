@@ -51,18 +51,19 @@ function merge (table1, table2)
 	return table1
 end
 
--- get index of field in table
+-- get index of field in table or character in string
 function indexOf (tbl, field)
-	local result
+	if type(tbl) == 'string' then
+		return tbl:find(field, 1, true)
+	end
 
-	for i = 1, #tbl do
-		if field == tbl[i] then
-			result = i
-			break
+	for index, value in pairs(tbl) do
+		if value == field then
+			return index
 		end
 	end
 
-	return result
+	return nil
 end
 
 -- create an error table to throw
