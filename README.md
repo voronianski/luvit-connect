@@ -28,7 +28,9 @@ http.createServer(app.handler).listen(8080)
 - logger
 - methodOverride
 - query
+- responseTime
 - static
+- timeout
 
 ### Tests
 
