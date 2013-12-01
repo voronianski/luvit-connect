@@ -3,7 +3,7 @@ local path = require('path')
 local proto = require('./proto')
 local helpers = require('./helpers')
 
---require('./patch')
+require('./patch')
 
 local connect = {}
 
