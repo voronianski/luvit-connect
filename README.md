@@ -25,6 +25,7 @@ http.createServer(app.handler).listen(8080)
 
 - directory
 - favicon
+- json
 - logger
 - methodOverride
 - query
