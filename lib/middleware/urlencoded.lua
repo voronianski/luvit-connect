@@ -1,15 +1,13 @@
 local table = require('table')
-local json = require('json')
+local qs = require('querystring')
 local helpers = require('../helpers')
 
--- parse JSON request bodies into req.body table
+-- parse x-ww-form-urlencoded request bodies into req.body table
 -- options:
---  `strict` - when false anything JSON.parse() accepts will be parsed, defaults to true
 --  `limit` - payload limit number, defaults to false
 
-function parseJson (options)
+function urlencoded (options)
 	options = options or {}
-	options.strict = options.strict or true
 
 	return function (req, res, follow)
 		if req._body then return follow() end
@@ -18,9 +16,12 @@ function parseJson (options)
 		if not helpers.hasBody(req.headers) then return follow() end
 
 		-- check content-type
-		if req.headers['content-type'] ~= 'application/json' then return follow() end
+		if  req.headers['content-type'] ~= 'application/x-www-form-urlencoded'
+			or req.headers['content-type'] ~= 'application/www-urlencoded'
+		then
+			return follow()
+		end
 
-		p('passed')
 		-- mark as parsed
 		req._body = true
 
@@ -38,27 +39,13 @@ function parseJson (options)
 			end
 
 			local buf = table.concat(body)
-			local firstChar = buf:sub(1, 1)
-
-			if strict and firstChar ~= '[' or firstChar ~= '{' then
-				return follow(helpers.throwError(400, 'invalid json'))
+			if #buf ~= 0 then
+				req.body = qs.parse(buf)
 			end
-
-			if #buf == 0 then
-				return follow(helpers.throwError(400, 'invalid json, empty body'))
-			end
-
-			local parseStatus, result = pcall(json.parse, buf)
-			if not parseStatus then
-				local err = helpers.throwError(400, result)
-				return follow(err)
-			end
-
-			req.body = result
 
 			follow()
 		end)
 	end
 end
 
-return parseJson
+return urlencoded
