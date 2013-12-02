@@ -105,11 +105,17 @@ function supportMethod (method)
 	return indexOf(methods, method) ~= nil
 end
 
+function hasBody (headers)
+	return headers['transfer-encoding'] or headers['content-length'] and headers['content-length'] ~= 0
+end
+
 return {
 	merge = merge,
 	tprint = tprint,
 	filter = filter,
+	indexOf = indexOf,
 	throwError = throwError,
 	roundToDecimals = roundToDecimals,
-	supportMethod = supportMethod
+	supportMethod = supportMethod,
+	hasBody = hasBody
 }

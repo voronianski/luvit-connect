@@ -52,7 +52,11 @@ function app:handle (req, res, out)
 				if env == 'production' then
 					msg = http.STATUS_CODES[res.code]
 				else
-					msg = tostring(err) or 'Unknown server error'
+					if err.status and err.msg then
+						msg = err.status .. ' ' .. err.msg
+					else
+						msg = tostring(err) or 'Unknown server error'
+					end
 				end
 
 				res:setHeader('Content-Type', 'text/html')
