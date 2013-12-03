@@ -18,9 +18,8 @@ function parseJson (options)
 		if not helpers.hasBody(req.headers) then return follow() end
 
 		-- check content-type
-		if req.headers['content-type'] ~= 'application/json' then return follow() end
+		if helpers.mime(req.headers) ~= 'application/json' then return follow() end
 
-		p('passed')
 		-- mark as parsed
 		req._body = true
 

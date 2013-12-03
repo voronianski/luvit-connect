@@ -66,6 +66,26 @@ function indexOf (tbl, field)
 	return nil
 end
 
+-- split string
+function split (str, sep)
+	sep = sep or '%s+'
+
+	local result = {}
+	local i = 1
+
+	for value in str:gmatch('([^' .. sep .. ']+)') do
+		result[i] = value
+		i = i + 1
+	end
+
+	return result
+end
+
+function mime (headers)
+	local str = headers['content-type'] or ''
+	return split(str, ';')[1]
+end
+
 -- create an error table to throw
 function throwError (code, msg)
 	return {
@@ -113,7 +133,9 @@ return {
 	merge = merge,
 	tprint = tprint,
 	filter = filter,
+	split = split,
 	indexOf = indexOf,
+	mime = mime,
 	throwError = throwError,
 	roundToDecimals = roundToDecimals,
 	supportMethod = supportMethod,

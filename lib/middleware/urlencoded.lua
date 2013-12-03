@@ -16,8 +16,9 @@ function urlencoded (options)
 		if not helpers.hasBody(req.headers) then return follow() end
 
 		-- check content-type
-		if  req.headers['content-type'] ~= 'application/x-www-form-urlencoded'
-			or req.headers['content-type'] ~= 'application/www-urlencoded'
+		local mime = helpers.mime(req.headers)
+		if  mime ~= 'application/x-www-form-urlencoded'
+			or mime ~= 'application/www-urlencoded'
 		then
 			return follow()
 		end
