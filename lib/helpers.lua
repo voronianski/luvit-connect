@@ -52,12 +52,12 @@ function merge (table1, table2)
 end
 
 -- get index of field in table or character in string
-function indexOf (tbl, field)
-	if type(tbl) == 'string' then
-		return tbl:find(field, 1, true)
+function indexOf (target, field)
+	if type(target) == 'string' then
+		return target:find(field, 1, true)
 	end
 
-	for index, value in pairs(tbl) do
+	for index, value in pairs(target) do
 		if value == field then
 			return index
 		end
@@ -129,6 +129,20 @@ function hasBody (headers)
 	return headers['transfer-encoding'] or headers['content-length'] and headers['content-length'] ~= 0
 end
 
+function decodeURI (str)
+	local function _ (hex)
+		return string.char(tonumber(hex, 16))
+	end
+
+	str = string.gsub(str, '%%(%x%x)', _)
+
+	return str
+end
+
+function encodeURI ()
+	-- body
+end
+
 return {
 	merge = merge,
 	tprint = tprint,
@@ -136,6 +150,8 @@ return {
 	split = split,
 	indexOf = indexOf,
 	mime = mime,
+	decodeURI = decodeURI,
+	encodeURI = encodeURI,
 	throwError = throwError,
 	roundToDecimals = roundToDecimals,
 	supportMethod = supportMethod,
