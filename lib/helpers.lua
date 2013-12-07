@@ -129,20 +129,6 @@ function hasBody (headers)
 	return headers['transfer-encoding'] or headers['content-length'] and headers['content-length'] ~= 0
 end
 
-function decodeURI (str)
-	local function _ (hex)
-		return string.char(tonumber(hex, 16))
-	end
-
-	str = string.gsub(str, '%%(%x%x)', _)
-
-	return str
-end
-
-function encodeURI ()
-	-- body
-end
-
 return {
 	merge = merge,
 	tprint = tprint,
@@ -150,8 +136,6 @@ return {
 	split = split,
 	indexOf = indexOf,
 	mime = mime,
-	decodeURI = decodeURI,
-	encodeURI = encodeURI,
 	throwError = throwError,
 	roundToDecimals = roundToDecimals,
 	supportMethod = supportMethod,
