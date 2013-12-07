@@ -11,7 +11,6 @@ function favicon (path, options)
 	return function (req, res, follow)
 		if ('/favicon.ico' == req.url) then
 			if (icon) then
-				print(req.url)
 				res:writeHead(200, icon.headers)
 				res:finish(icon.body)
 			else
