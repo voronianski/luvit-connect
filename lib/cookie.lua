@@ -1,4 +1,4 @@
--- Cookie module
+-- Cookies module
 -- TO DO: extract to separate luvit module
 
 local os = require('os')
@@ -12,6 +12,13 @@ local Cookie = Object:extend()
 function Cookie.meta.__tostring ()
 	return '<Cookie>'
 end
+
+-- serialize a "name-value" pair into a cookie string suitable for http headers.
+-- an optional options table specifies cookie parameters.
+-- @param {String} name
+-- @param {String} value
+-- @param {Table} options
+-- @return {String}
 
 function Cookie:serialize (name, value, options)
 	options = options or {}
@@ -28,6 +35,10 @@ function Cookie:serialize (name, value, options)
 
 	return table.concat(cookiePairs, '; ')
 end
+
+-- parse the given cookie header string into a table
+-- @param {String} str
+-- @return {Table}
 
 function Cookie:parse (str, options)
 	options = options or {}
