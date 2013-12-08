@@ -4,6 +4,7 @@
 local os = require('os')
 local qs = require('querystring')
 local table = require('table')
+local json = require('json')
 local Object = require('core').Object
 local helpers = require('./helpers')
 
@@ -13,8 +14,8 @@ function Cookie.meta.__tostring ()
 	return '<Cookie>'
 end
 
--- serialize a "name-value" pair into a cookie string suitable for http headers.
--- an optional options table specifies cookie parameters.
+-- Serialize a "name-value" pair into a cookie string suitable for http headers.
+-- An optional options table specifies cookie parameters.
 -- @param {String} name
 -- @param {String} value
 -- @param {Table} options
@@ -36,7 +37,7 @@ function Cookie:serialize (name, value, options)
 	return table.concat(cookiePairs, '; ')
 end
 
--- parse the given cookie header string into a table
+-- Parse the given cookie header string into a table
 -- @param {String} str
 -- @return {Table}
 
@@ -62,6 +63,24 @@ function Cookie:parse (str, options)
 
 		if not tbl[key] then
 			tbl[key] = options.decode(val)
+		end
+	end)
+
+	return tbl
+end
+
+-- Parse JSON values in cookies
+-- @param {Table} tbl
+-- return {Table}
+
+function Cookie:parseJSONCookies (tbl)
+	table.foreach(tbl, function (index, str)
+		if helpers.indexOf(str, 'j:') == 1 then
+			local parseStatus, result = pcall(json.parse, str:sub(3, #str))
+
+			if not parseStatus then return nil end
+
+			tbl[index] = result
 		end
 	end)
 

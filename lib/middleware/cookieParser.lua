@@ -15,7 +15,7 @@ function cookieParser (secret, options)
 
 		req.secret = secret
 		req.cookies = {}
-		req.signedCookie = {}
+		req.signedCookies = {}
 
 		if cookies then
 			local parseStatus, result = pcall(cookie.parse, cookies, options)
@@ -25,9 +25,11 @@ function cookieParser (secret, options)
 				return follow(err)
 			end
 
-			-- to do: parse cookies
+			if secret then
+				-- TO DO: parse req.signedCookies
+			end
 
-			if signedCookie then end
+			req.cookies = cookie:parseJSONCookies(result)
 		end
 
 		follow()
