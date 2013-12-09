@@ -120,11 +120,26 @@ function Cookie:parseJSONCookies (tbl)
 	return tbl
 end
 
+-- Parse signed cookies.
+-- Returns a table containing the decoded key/value pairs, while removing the signed key from 'tbl'.
 -- @param {Table} tbl
+-- @param {String} secret
 -- return {Table}
 
-function Cookie:parseSignedCookies (tbl)
+function Cookie:parseSignedCookies (tbl, secret)
+	local result
 
+	table.foreach(tbl, function (index, str)
+		if helpers.indexOf(str, 's:') == 1 then
+			local value = self.unsign(str:sub(3, #str), secret)
+			if value then
+				result[index] = value
+				tbl[index] = nil
+			end
+		end
+	end)
+
+	return result
 end
 
 return Cookie
