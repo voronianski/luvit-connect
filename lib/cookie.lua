@@ -4,6 +4,7 @@
 local os = require('os')
 local qs = require('querystring')
 local table = require('table')
+local crypto = require('_crypto')
 local json = require('json')
 local Object = require('core').Object
 local helpers = require('./helpers')
@@ -69,6 +70,38 @@ function Cookie:parse (str, options)
 	return tbl
 end
 
+-- Sign value with secret.
+-- @param {String} value
+-- @param {String} secret
+-- @return {String}
+
+function Cookie:sign (value, secret)
+	if type(value) ~= 'string' then error('cookie required') end
+	if type(secret) ~= 'string' then error('secret required') end
+
+	local signed = value .. '.' .. crypto.hmac.new('sha256', secret):update(value):final():gsub('%=+$', '')
+
+	return signed
+end
+
+-- Unsign and decode value with secret, returns 'false' if signature is invalid.
+-- @param {String} value
+-- @param {String} secret
+-- @return {String}
+
+function Cookie:unsign (value, secret)
+	if type(value) ~= 'string' then error('cookie required') end
+	if type(secret) ~= 'string' then error('secret required') end
+
+	local str = value:sub(1, helpers.lastIndexOf(value, '%.') - 1)
+
+	if self:sign(str, secret) == value then
+		return str
+	end
+
+	return false
+end
+
 -- Parse JSON values in cookies
 -- @param {Table} tbl
 -- return {Table}
@@ -85,6 +118,13 @@ function Cookie:parseJSONCookies (tbl)
 	end)
 
 	return tbl
+end
+
+-- @param {Table} tbl
+-- return {Table}
+
+function Cookie:parseSignedCookies (tbl)
+
 end
 
 return Cookie

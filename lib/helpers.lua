@@ -66,6 +66,19 @@ function indexOf (target, field)
 	return nil
 end
 
+-- last index of an element in string
+function lastIndexOf (str, elem)
+	if type(str) ~= 'string' then error('string required') end
+	if type(str) ~= 'string' then error('elem required') end
+
+	local index = str:match('.*' .. elem .. '()')
+	if not index then
+		return nil
+	else
+		return index - 1
+	end
+end
+
 -- split string
 function split (str, sep)
 	sep = sep or '%s+'
@@ -135,6 +148,7 @@ return {
 	filter = filter,
 	split = split,
 	indexOf = indexOf,
+	lastIndexOf = lastIndexOf,
 	mime = mime,
 	throwError = throwError,
 	roundToDecimals = roundToDecimals,
