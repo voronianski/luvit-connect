@@ -23,6 +23,7 @@ http.createServer(app.handler).listen(8080)
 
 ### Middlewares
 
+- cookieParser
 - directory
 - favicon
 - json
