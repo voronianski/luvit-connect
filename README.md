@@ -37,5 +37,19 @@ http.createServer(app.handler).listen(8080)
 
 ### Tests
 
----
-(c) 2013 **MIT Licensed**
+## License (MIT)
+
+```
+WWWWWW||WWWWWW
+ W W W||W W W
+      ||
+    ( OO )__________
+     /  |           \
+    /o o|    MIT     \
+    \___/||_||__||_|| *
+         || ||  || ||
+        _||_|| _||_||
+       (__|__|(__|__|
+```
+
+Copyright (c) 2013 Dmitri Voronianski <dmitri.voronianski@gmail.com>
