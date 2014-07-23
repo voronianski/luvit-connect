@@ -4,8 +4,6 @@ This module is no longer supported, use [luvit-utopia](https://github.com/luvitr
 
 [![](https://dl.dropboxusercontent.com/u/100463011/scope.png)](https://dribbble.com/shots/1357786-Scope)
 
-To do!
-
 ## License (MIT)
 
 ```
