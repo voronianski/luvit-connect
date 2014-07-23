@@ -1,6 +1,4 @@
-# luvit-connect
-
-This module is no longer supported, use [luvit-utopia](https://github.com/luvitrocks/luvit-utopia) instead.
+## This module is no longer supported, use [luvit-utopia](https://github.com/luvitrocks/luvit-utopia) instead.
 
 [![](https://dl.dropboxusercontent.com/u/100463011/scope.png)](https://dribbble.com/shots/1357786-Scope)
 
